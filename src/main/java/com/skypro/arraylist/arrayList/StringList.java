@@ -10,14 +10,8 @@ public interface StringList {
 
         public String remove(String item);
 
-        // Удаление элемента по индексу.
-        // Вернуть удаленный элемент
-        // или исключение, если подобный
-        // элемент отсутствует в списке.
         public String remove(int index);
 
-        // Проверка на существование элемента.
-        // Вернуть true/false;
         public boolean contains(String item);
 
         public int indexOf(String item);
