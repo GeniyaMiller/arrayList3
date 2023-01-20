@@ -24,9 +24,9 @@ public class IntegerListImpl implements IntegerList {
         }
     }
 
-    private void validateSize() {
+    private void growIfNeeded() {
         if (size == integerList.length) {
-            throw new ArrayIndexOutOfBoundsException("Массив заполнен");
+            grow();
         }
     }
 
@@ -34,7 +34,7 @@ public class IntegerListImpl implements IntegerList {
     @Override
     public Integer add(Integer item) {
         nullException(item);
-        validateSize();
+        growIfNeeded();
         integerList[size++] = item;
         return item;
     }
@@ -43,7 +43,7 @@ public class IntegerListImpl implements IntegerList {
     public Integer add(int index, Integer item) {
         nullException(item);
         indexOut(index);
-        validateSize();
+        growIfNeeded();
         if (index == size) {
             integerList[size++] = item;
             return item;
@@ -104,7 +104,7 @@ public class IntegerListImpl implements IntegerList {
 
     @Override
     public Integer get(int index) {
-        validateSize();
+        growIfNeeded();
         return integerList[index];
     }
 
@@ -134,23 +134,7 @@ public class IntegerListImpl implements IntegerList {
     @Override
     public Integer[] toArray() {
         return Arrays.copyOf(integerList,size);
-    }
-
-    public Integer[] getStringList() {
-        return integerList;
-    }
-
-    public void setIntegerList(Integer[] stringList) {
-        this.integerList = integerList;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
+    }    
 
     @Override
     public String toString() {
@@ -208,6 +192,12 @@ public class IntegerListImpl implements IntegerList {
         }
     }
 
+    // Сортировка
+
+    public void sort(Integer[] arr) {
+        quickSort(arr, 0, arr.length - 1);
+    }
+
     //Поиск
 
     private static int binarySearch1(Integer[] integers, Integer item) {
@@ -215,11 +205,42 @@ public class IntegerListImpl implements IntegerList {
         return Arrays.binarySearch(integers, item);
     }
 
+    // Быстрая сортировка
+
+    public static void quickSort(Integer[] arr, int begin, int end) {
+        if (begin < end) {
+            int partitionIndex = partition(arr, begin, end);
+
+            quickSort(arr, begin, partitionIndex - 1);
+            quickSort(arr, partitionIndex + 1, end);
+        }
+    }
+
+    private static int partition(Integer[] arr, int begin, int end) {
+        int pivot = arr[end];
+        int i = (begin - 1);
+
+        for (int j = begin; j < end; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+
+                swapElements(arr, i, j);
+            }
+        }
+
+        swapElements(arr, i + 1, end);
+        return i + 1;
+    }
+
 
     private static void swapElements(Integer[] arr, int j, int i) {
         int tmp = arr[j];
         arr[j] = arr[i];
         arr[i] = tmp;
+    }
+
+    private void grow() {
+        integerList = Arrays.copyOf(integerList, size + size/2);
     }
 
     public static void main(String[] args) {
